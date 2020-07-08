@@ -1,6 +1,8 @@
 require('./config/config');
 
 const express = require('express');
+const mongoose = require('mongoose');
+
 const app = express();
 const bodyParser = require('body-parser') //utilizamos
 
@@ -8,38 +10,16 @@ const bodyParser = require('body-parser') //utilizamos
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+//colocamos la ruta del usuario
+app.use(require('./routes/usuario'))
 
-app.get('/usuario', (req, res) => {
-    res.json('get Usuario');
+
+//coneccion para el mongo 
+mongoose.connect('mongodb://localhost:27017/cafe', { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true }, (err, res) => { //colback
+    if (err) throw err;
+    console.log("base de datos online");
+
 });
-
-app.post('/usuario', (req, res) => {
-    let body = req.body
-        //se hace una validacion para pida mecesariamente el nombre o salga un error 400
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: "El nombre es necesario"
-        });
-    } else {
-        res.json({
-            persona: body
-        });
-    }
-    //res.json('post Usuario');
-});
-
-app.put('/usuario/:id', (req, res) => {
-    let id = req.params.id;
-    res.json({
-        id
-    });
-});
-
-app.delete('/usuario', (req, res) => {
-    res.json('delete Usuario');
-});
-
 
 app.listen(process.env.PORT, () => {
         console.log("Escuchando en el puerto", process.env.PORT);
@@ -52,3 +32,7 @@ app.listen(process.env.PORT, () => {
 
 //para installar body colocamos
 //npm install body-parser --save
+
+//********************************** */
+//para instalar la libreria de mongo colocmaos 
+//npm install mongoose --save
